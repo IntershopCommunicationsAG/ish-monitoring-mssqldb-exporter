@@ -1,0 +1,43 @@
+version: '3'
+networks:
+  mssql-prom-exporter:
+
+services:
+  sqlserver:
+    image: microsoft/mssql-server-linux
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=YourStrong!Passw0rd
+    ports:
+      - 1433:1433
+    networks:
+      - mssql-prom-exporter
+
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./configs/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - mssql-prom-exporter
+
+  mssql-exporter:
+    build:
+      context: .
+    depends_on:
+      - sqlserver
+    ports:
+      - "8000:8000"
+    environment:
+      - MSSSQL_SERVER=sqlserver
+      - MSSSQL_USERNAME=SA
+      - MSSSQL_PASSWORD=YourStrong!Passw0rd
+      - FLASK_CONFIG=config.DevelopmentConfig
+      - COLLECT_METRICS_INTERVAL_SEC=15
+    networks:
+      - mssql-prom-exporter
+
+volumes:
+  exporter_data:
+    driver: local

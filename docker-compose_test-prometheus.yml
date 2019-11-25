@@ -1,0 +1,37 @@
+version: '3'
+
+volumes:
+  prometheus_data: {}
+
+services:
+  prometheus:
+    image: prom/prometheus:v2.13.1
+    volumes:
+      - ./configs/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.console.libraries=/usr/share/prometheus/console_libraries"
+      - "--web.console.templates=/usr/share/prometheus/consoles"
+    depends_on:
+      - ish-monitoring-mssql-exporter
+    ports:
+      - 9090:9090
+  grafana:
+    image: grafana/grafana
+    ports:
+     - "3000:3000"
+    depends_on:
+      - prometheus
+  ish-monitoring-mssql-exporter:
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+    environment:
+      - MSSSQL_SERVER=jengmssql.rnd.j.intershop.de
+      - MSSSQL_USERNAME=SA
+      - MSSSQL_PASSWORD=Intersh0p
+      - FLASK_CONFIG=config.DevelopmentConfig
+      - COLLECT_METRICS_INTERVAL_SEC=15

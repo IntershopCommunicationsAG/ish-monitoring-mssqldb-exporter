@@ -1,6 +1,6 @@
 import logging
 
-from pyodbc import connect, OperationalError, InterfaceError, DatabaseError
+from pyodbc import connect, DatabaseError
 
 from flask import current_app as app
 
@@ -13,7 +13,7 @@ def get_connection():
     user = app.config["USERNAME"]
     password = app.config["PASSWORD"]
 
-    conn = connect('DRIVER={ODBC Driver 13 for SQL Server};SERVER=%s,%s;UID=%s;PWD=%s' % (host, port, user, password))
+    conn = connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER=%s,%s;UID=%s;PWD=%s' % (host, port, user, password))
     return conn
 
 

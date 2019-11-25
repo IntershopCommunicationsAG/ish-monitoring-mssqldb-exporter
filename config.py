@@ -10,10 +10,10 @@ import os
 class BaseConfig:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    HOST = os.getenv('MSSSQL_HOST', 'jengmssql.rnd.j.intershop.de')
+    HOST = os.getenv('MSSSQL_HOST', 'localhost')
     PORT = os.getenv('MSSSQL_PORT', 1433)
     USERNAME = os.getenv('MSSSQL_USERNAME', 'sa')
-    PASSWORD = os.getenv('MSSSQL_PASSWORD', 'Intersh0p')
+    PASSWORD = os.getenv('MSSSQL_PASSWORD', 'YourStrong!Passw0rd')
     COLLECT_METRICS_INTERVAL_SEC = int(
         os.getenv('COLLECT_METRICS_INTERVAL_SEC', 120))
     DEBUG = False

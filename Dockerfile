@@ -2,6 +2,9 @@ ARG PYTHON_VERSION=3.7
 
 FROM python:${PYTHON_VERSION}-slim-buster
 
+RUN apt-get update \
+    && apt-get install gcc -y
+
 ENV PYTHONDONTWRITEBYTECODE=True
 
 RUN mkdir -p /usr/src/app

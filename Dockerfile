@@ -3,7 +3,7 @@ ARG PYTHON_VERSION=3.7
 FROM python:${PYTHON_VERSION}-slim-buster
 
 RUN apt-get update \
-    && apt-get install gcc -y
+    && apt-get install -yqq gcc build-essential unixodbc unixodbc-dev
 
 ENV PYTHONDONTWRITEBYTECODE=True
 

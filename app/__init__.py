@@ -5,7 +5,7 @@ import os
 from flask import Flask
 from flask_apscheduler import APScheduler
 # Defines the format of the logging to include the time and to use the INFO logging level or worse.
-from pyodbc import OperationalError
+from pymssql import OperationalError
 from pythonjsonlogger import jsonlogger
 
 LOGGER = logging.getLogger(__name__)

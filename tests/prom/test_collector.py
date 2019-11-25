@@ -1,7 +1,7 @@
 from unittest import TestCase, mock
 from unittest.mock import MagicMock
 
-from pyodbc import InterfaceError
+from pymssql import InterfaceError
 
 from app.prom import collector
 

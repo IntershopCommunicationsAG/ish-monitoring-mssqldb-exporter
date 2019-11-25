@@ -3,7 +3,7 @@ Collect metrics
 """
 import logging
 
-from pyodbc import InterfaceError
+from pymssql import InterfaceError
 
 from app.prom.database import util as db_util
 
@@ -11,6 +11,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 class Collector:
+
     def __init__(self, metrics):
         """
         :param metrics: metrics to collect
@@ -25,15 +26,19 @@ class Collector:
         with app.app_context():
             LOGGER.info("Start collecting metrics")
             try:
-                with db_util.get_connection() as conn:
+                if db_util.is_port_open():
+                    with db_util.get_connection() as conn:
+                        for metric in self.metrics:
+                            LOGGER.debug("collect %s", metric)
+                            if hasattr(metric, 'query'):
+                                result = db_util.get_query_result(conn, metric.query)
+                                metric.collect(result)
+                            else:
+                                metric.collect(app)
+                else:
                     for metric in self.metrics:
-                        LOGGER.debug("collect %s", metric)
-
-                        if hasattr(metric, 'query'):
-                            result = db_util.get_query_result(conn, metric.query)
-                            metric.collect(result)
-                        else:
-                            metric.collect()
+                        if hasattr(metric, 'is_up_metric'):
+                            metric.collect(app)
             except InterfaceError as e:
                 LOGGER.error("Exception when collecting metrics: %s",
                              str(e),

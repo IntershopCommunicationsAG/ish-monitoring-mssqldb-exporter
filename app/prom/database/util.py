@@ -1,19 +1,30 @@
 import logging
-
-from pyodbc import connect, DatabaseError
+import socket
+from pymssql import connect, DatabaseError, InterfaceError, OperationalError
 
 from flask import current_app as app
 
 LOGGER = logging.getLogger(__name__)
 
 
+def is_port_open():
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        s.connect((app.config["SERVER"], int(app.config["PORT"])))
+        s.shutdown(2)
+        return True
+    except:
+        return False
+
 def get_connection():
-    host = app.config["HOST"]
+    server = app.config["SERVER"]
     port = app.config["PORT"]
     user = app.config["USERNAME"]
     password = app.config["PASSWORD"]
-
-    conn = connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER=%s,%s;UID=%s;PWD=%s' % (host, port, user, password))
+    try:
+        conn = connect(server=server, port=port, user=user, password=password)
+    except OperationalError:
+        raise InterfaceError
     return conn
 
 

@@ -26,6 +26,8 @@ class BufferManager(AbstractMetric):
          'Page reads/sec'
          , 'Page writes/sec'
          , 'Lazy writes/sec'
+         , 'Buffer cache hit ratio'
+         , 'Page life expectancy'
         )
         AND object_name LIKE '%%Buffer Manager%%'
         ''' % (COUNTER_NAME, VALUE))

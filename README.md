@@ -91,22 +91,21 @@ In general the rules are:
 ```
 # HELP mssql_batch_requests Number of Transact-SQL command batches received per second.\n            This statistic is affected by all constraints (such as I/O, number of users, cachesize,\n            complexity of requests, and so on). High batch requests mean good throughput
 # TYPE mssql_batch_requests gauge
-mssql_batch_requests 12642.0
+mssql_batch_requests 16083.0
 # HELP mssql_buffer_manager Several buffer manager counters of SQL Server.
 # TYPE mssql_buffer_manager gauge
+mssql_buffer_manager{counter_name="buffer_cache_hit_ratio"} 6.0
 mssql_buffer_manager{counter_name="lazy_writessec"} 0.0
 mssql_buffer_manager{counter_name="page_readssec"} 4310.0
 mssql_buffer_manager{counter_name="page_writessec"} 92.0
-# HELP mssql_connections Number of connections
-# TYPE mssql_connections gauge
-mssql_connections{database="master",state="current"} 47.0
+mssql_buffer_manager{counter_name="page_life_expectancy"} 15704.0
 # HELP mssql_deadlocks Number of lock requests per second that resulted in a deadlock since last restart
 # TYPE mssql_deadlocks gauge
 mssql_deadlocks 0.0
 # HELP mssql_io_stall Wait time (ms) of stall since last restart
 # TYPE mssql_io_stall gauge
 mssql_io_stall{database="master",type="stall_read"} 92.0
-mssql_io_stall{database="master",type="stall_write"} 280.0
+mssql_io_stall{database="master",type="stall_write"} 336.0
 mssql_io_stall{database="master",type="stall_queued_read"} 0.0
 mssql_io_stall{database="master",type="stall_queued_write"} 0.0
 mssql_io_stall{database="tempdb",type="stall_read"} 57.0
@@ -123,7 +122,7 @@ mssql_io_stall{database="msdb",type="stall_queued_read"} 0.0
 mssql_io_stall{database="msdb",type="stall_queued_write"} 0.0
 # HELP mssql_io_stall_total Wait time (ms) of stall since last restart
 # TYPE mssql_io_stall_total gauge
-mssql_io_stall_total{database="master"} 315.0
+mssql_io_stall_total{database="master"} 371.0
 mssql_io_stall_total{database="tempdb"} 58.0
 mssql_io_stall_total{database="model"} 61.0
 mssql_io_stall_total{database="msdb"} 137.0
@@ -142,13 +141,13 @@ mssql_log_growths{database="master"} 0.0
 mssql_log_total_size_in_bytes 2.08896e+06
 # HELP mssql_log_used_space_in_bytes Used log space in bytes
 # TYPE mssql_log_used_space_in_bytes gauge
-mssql_log_used_space_in_bytes 999424.0
+mssql_log_used_space_in_bytes 1.41312e+06
 # HELP mssql_log_used_space_in_percentage Used log space in percentage
 # TYPE mssql_log_used_space_in_percentage gauge
-mssql_log_used_space_in_percentage 47.843135833740234
+mssql_log_used_space_in_percentage 67.64705657958984
 # HELP mssql_log_space_in_bytes_since_last_backup Log space in bytes since last backup
 # TYPE mssql_log_space_in_bytes_since_last_backup gauge
-mssql_log_space_in_bytes_since_last_backup 577536.0
+mssql_log_space_in_bytes_since_last_backup 1.056768e+06
 # HELP mssql_page_fault_count Number of page faults since last restart
 # TYPE mssql_page_fault_count gauge
 mssql_page_fault_count 0.0
@@ -160,7 +159,7 @@ mssql_memory_utilization_percentage 100.0
 mssql_virtual_address_space_committed_kb 4.194304e+06
 # HELP mssql_physical_memory_in_use_kb SQL Server committed virtual memory size.
 # TYPE mssql_physical_memory_in_use_kb gauge
-mssql_physical_memory_in_use_kb 199872.0
+mssql_physical_memory_in_use_kb 210584.0
 # HELP mssql_total_physical_memory_kb Total physical memory in KB
 # TYPE mssql_total_physical_memory_kb gauge
 mssql_total_physical_memory_kb 1.622016e+06
@@ -173,19 +172,19 @@ mssql_total_page_file_kb 1.622016e+06
 # HELP mssql_available_page_file_kb Available page file in KB
 # TYPE mssql_available_page_file_kb gauge
 mssql_available_page_file_kb 1.622016e+06
-# HELP mssql_page_life_expectancy Indicates the minimum number of seconds a page will stay in the buffer pool on this node without references.\n            The traditional advice from Microsoft used to be that the PLE should remain above 300 seconds
-# TYPE mssql_page_life_expectancy gauge
-mssql_page_life_expectancy 12280.0
 # HELP mssql_performance_counters Several performance counters of SQL Server.
 # TYPE mssql_performance_counters gauge
-mssql_performance_counters{counter_name="user_connections"} 3.0
-mssql_performance_counters{counter_name="connection_memory_kb"} 1288.0
+mssql_performance_counters{counter_name="user_connections"} 4.0
+mssql_performance_counters{counter_name="connection_memory_kb"} 1376.0
 mssql_performance_counters{counter_name="lock_memory_kb"} 672.0
 mssql_performance_counters{counter_name="lock_blocks_allocated"} 0.0
 mssql_performance_counters{counter_name="lock_blocks"} 0.0
 mssql_performance_counters{counter_name="lock_owner_blocks"} 0.0
 mssql_performance_counters{counter_name="target_server_memory_kb"} 1.622016e+06
-mssql_performance_counters{counter_name="total_server_memory_kb"} 199872.0
+mssql_performance_counters{counter_name="total_server_memory_kb"} 210584.0
+# HELP mssql_system_processes Number of system processes
+# TYPE mssql_system_processes gauge
+mssql_system_processes{database="master"} 54.0
 # HELP mssql_up MsSQL exporter UP status
 # TYPE mssql_up gauge
 mssql_up 1.0
@@ -194,7 +193,7 @@ mssql_up 1.0
 mssql_uptime 0.0
 # HELP mssql_user_errors Number of user errors/sec since last restart
 # TYPE mssql_user_errors gauge
-mssql_user_errors 1994.0
+mssql_user_errors 2527.0
 ```
 
 ### Build and Push

@@ -1,12 +1,12 @@
 # ISH-Monitoring-MsSQLDB Prometheus Exporter
-MsSQL Exporter for Prometheus in python. Metrics are scraped by scheduler, and the interval is configurable via environment variable
+MSSQL Exporter for Prometheus in python. Metrics are scraped by scheduler, and the interval is configurable via environment variable
 
 
 ## Integration
 Run `docker-compose up`. When the image is not build yet, please run `docker-compose up --build`
 
 After launching up, metrics show up in `http://localhost:8000/metrics`,
-by using promql `{__name__=~".+",job="prometheusMssqlExporter"}`
+by using promql `{__name__=~".+",app="prometheus-mssql-exporter"}`
 
 To rebuild the image please run `docker-compose up --build`
 
@@ -89,237 +89,51 @@ In general the rules are:
 
 #### Existing metrics
 ```
-# HELP mssql_batch_requests Number of Transact-SQL command batches received per second.\n            This statistic is affected by all constraints (such as I/O, number of users, cachesize, \n            complexity of requests, and so on). High batch requests mean good throughput
+# HELP mssql_batch_requests Number of Transact-SQL command batches received per second.\n            This statistic is affected by all constraints (such as I/O, number of users, cachesize,\n            complexity of requests, and so on). High batch requests mean good throughput
 # TYPE mssql_batch_requests gauge
-mssql_batch_requests 5.2578822e+07
+mssql_batch_requests 12642.0
+# HELP mssql_buffer_manager Several buffer manager counters of SQL Server.
+# TYPE mssql_buffer_manager gauge
+mssql_buffer_manager{counter_name="lazy_writessec"} 0.0
+mssql_buffer_manager{counter_name="page_readssec"} 4310.0
+mssql_buffer_manager{counter_name="page_writessec"} 92.0
 # HELP mssql_connections Number of connections
 # TYPE mssql_connections gauge
-mssql_connections{database="ISTE_TP07137_TS57367",state="current"} 10.0
-mssql_connections{database="ISTE_TP07137_TS57389",state="current"} 10.0
-mssql_connections{database="ISTE_TP07137_TS57393",state="current"} 10.0
-mssql_connections{database="ISTE_TP07137_TS57419",state="current"} 2.0
-mssql_connections{database="ISTE_TP07137_TS57421",state="current"} 10.0
-mssql_connections{database="ISTE_TP07137_TS57437",state="current"} 10.0
-mssql_connections{database="ISTE_TP07137_TS57443",state="current"} 10.0
-mssql_connections{database="ISTE_TP07137_TS57469",state="current"} 10.0
-mssql_connections{database="ISTE_TP07137_TS57485",state="current"} 10.0
-mssql_connections{database="ISTE_TP07137_TS57561",state="current"} 10.0
-mssql_connections{database="ISTE_TP07137_TS57571",state="current"} 10.0
-mssql_connections{database="ISTE_TP07137_TS57615",state="current"} 10.0
-mssql_connections{database="ISTE_TP07137_TS57695",state="current"} 10.0
-mssql_connections{database="ISTE_TP07137_TS58013",state="current"} 10.0
-mssql_connections{database="ISTE_TP07137_TS58015",state="current"} 11.0
-mssql_connections{database="ISTE_TP07137_TS58019",state="current"} 10.0
-mssql_connections{database="master",state="current"} 52.0
+mssql_connections{database="master",state="current"} 47.0
 # HELP mssql_deadlocks Number of lock requests per second that resulted in a deadlock since last restart
 # TYPE mssql_deadlocks gauge
 mssql_deadlocks 0.0
 # HELP mssql_io_stall Wait time (ms) of stall since last restart
 # TYPE mssql_io_stall gauge
-mssql_io_stall{database="master",type="stall_read"} 77.0
-mssql_io_stall{database="master",type="stall_write"} 1572.0
+mssql_io_stall{database="master",type="stall_read"} 92.0
+mssql_io_stall{database="master",type="stall_write"} 280.0
 mssql_io_stall{database="master",type="stall_queued_read"} 0.0
 mssql_io_stall{database="master",type="stall_queued_write"} 0.0
-mssql_io_stall{database="tempdb",type="stall_read"} 51890.0
-mssql_io_stall{database="tempdb",type="stall_write"} 37527.0
+mssql_io_stall{database="tempdb",type="stall_read"} 57.0
+mssql_io_stall{database="tempdb",type="stall_write"} 6.0
 mssql_io_stall{database="tempdb",type="stall_queued_read"} 0.0
 mssql_io_stall{database="tempdb",type="stall_queued_write"} 0.0
-mssql_io_stall{database="model",type="stall_read"} 155.0
-mssql_io_stall{database="model",type="stall_write"} 5.0
+mssql_io_stall{database="model",type="stall_read"} 61.0
+mssql_io_stall{database="model",type="stall_write"} 11.0
 mssql_io_stall{database="model",type="stall_queued_read"} 0.0
 mssql_io_stall{database="model",type="stall_queued_write"} 0.0
-mssql_io_stall{database="msdb",type="stall_read"} 366.0
-mssql_io_stall{database="msdb",type="stall_write"} 344.0
+mssql_io_stall{database="msdb",type="stall_read"} 137.0
+mssql_io_stall{database="msdb",type="stall_write"} 1.0
 mssql_io_stall{database="msdb",type="stall_queued_read"} 0.0
 mssql_io_stall{database="msdb",type="stall_queued_write"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS57615",type="stall_read"} 164.0
-mssql_io_stall{database="ISTE_TP07137_TS57615",type="stall_write"} 115.0
-mssql_io_stall{database="ISTE_TP07137_TS57615",type="stall_queued_read"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS57615",type="stall_queued_write"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS57393",type="stall_read"} 148.0
-mssql_io_stall{database="ISTE_TP07137_TS57393",type="stall_write"} 1718.0
-mssql_io_stall{database="ISTE_TP07137_TS57393",type="stall_queued_read"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS57393",type="stall_queued_write"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS57367",type="stall_read"} 873.0
-mssql_io_stall{database="ISTE_TP07137_TS57367",type="stall_write"} 1481.0
-mssql_io_stall{database="ISTE_TP07137_TS57367",type="stall_queued_read"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS57367",type="stall_queued_write"} 0.0
-mssql_io_stall{database="ISTE_ICM_DEV",type="stall_read"} 635.0
-mssql_io_stall{database="ISTE_ICM_DEV",type="stall_write"} 422.0
-mssql_io_stall{database="ISTE_ICM_DEV",type="stall_queued_read"} 0.0
-mssql_io_stall{database="ISTE_ICM_DEV",type="stall_queued_write"} 0.0
-mssql_io_stall{database="ISTE_TP07141",type="stall_read"} 54.0
-mssql_io_stall{database="ISTE_TP07141",type="stall_write"} 401.0
-mssql_io_stall{database="ISTE_TP07141",type="stall_queued_read"} 0.0
-mssql_io_stall{database="ISTE_TP07141",type="stall_queued_write"} 0.0
-mssql_io_stall{database="ISTE_TP07137",type="stall_read"} 1402.0
-mssql_io_stall{database="ISTE_TP07137",type="stall_write"} 31100.0
-mssql_io_stall{database="ISTE_TP07137",type="stall_queued_read"} 0.0
-mssql_io_stall{database="ISTE_TP07137",type="stall_queued_write"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS57695",type="stall_read"} 177.0
-mssql_io_stall{database="ISTE_TP07137_TS57695",type="stall_write"} 62.0
-mssql_io_stall{database="ISTE_TP07137_TS57695",type="stall_queued_read"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS57695",type="stall_queued_write"} 0.0
-mssql_io_stall{database="ISTE_TP07115_TS48733",type="stall_read"} 7961.0
-mssql_io_stall{database="ISTE_TP07115_TS48733",type="stall_write"} 2068.0
-mssql_io_stall{database="ISTE_TP07115_TS48733",type="stall_queued_read"} 0.0
-mssql_io_stall{database="ISTE_TP07115_TS48733",type="stall_queued_write"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS58013",type="stall_read"} 3119.0
-mssql_io_stall{database="ISTE_TP07137_TS58013",type="stall_write"} 2222.0
-mssql_io_stall{database="ISTE_TP07137_TS58013",type="stall_queued_read"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS58013",type="stall_queued_write"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS57887",type="stall_read"} 66.0
-mssql_io_stall{database="ISTE_TP07137_TS57887",type="stall_write"} 13.0
-mssql_io_stall{database="ISTE_TP07137_TS57887",type="stall_queued_read"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS57887",type="stall_queued_write"} 0.0
-mssql_io_stall{database="ISTE_TP07115_TS48781",type="stall_read"} 3157.0
-mssql_io_stall{database="ISTE_TP07115_TS48781",type="stall_write"} 655.0
-mssql_io_stall{database="ISTE_TP07115_TS48781",type="stall_queued_read"} 0.0
-mssql_io_stall{database="ISTE_TP07115_TS48781",type="stall_queued_write"} 0.0
-mssql_io_stall{database="ISTE_TP07140",type="stall_read"} 1774.0
-mssql_io_stall{database="ISTE_TP07140",type="stall_write"} 28113.0
-mssql_io_stall{database="ISTE_TP07140",type="stall_queued_read"} 0.0
-mssql_io_stall{database="ISTE_TP07140",type="stall_queued_write"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS57437",type="stall_read"} 1071.0
-mssql_io_stall{database="ISTE_TP07137_TS57437",type="stall_write"} 1640.0
-mssql_io_stall{database="ISTE_TP07137_TS57437",type="stall_queued_read"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS57437",type="stall_queued_write"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS57419",type="stall_read"} 72.0
-mssql_io_stall{database="ISTE_TP07137_TS57419",type="stall_write"} 13.0
-mssql_io_stall{database="ISTE_TP07137_TS57419",type="stall_queued_read"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS57419",type="stall_queued_write"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS58019",type="stall_read"} 1120.0
-mssql_io_stall{database="ISTE_TP07137_TS58019",type="stall_write"} 1413.0
-mssql_io_stall{database="ISTE_TP07137_TS58019",type="stall_queued_read"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS58019",type="stall_queued_write"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS57401",type="stall_read"} 66.0
-mssql_io_stall{database="ISTE_TP07137_TS57401",type="stall_write"} 14.0
-mssql_io_stall{database="ISTE_TP07137_TS57401",type="stall_queued_read"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS57401",type="stall_queued_write"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS58023",type="stall_read"} 67.0
-mssql_io_stall{database="ISTE_TP07137_TS58023",type="stall_write"} 17.0
-mssql_io_stall{database="ISTE_TP07137_TS58023",type="stall_queued_read"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS58023",type="stall_queued_write"} 0.0
-mssql_io_stall{database="ISTE_TP07115_TS49311",type="stall_read"} 3610.0
-mssql_io_stall{database="ISTE_TP07115_TS49311",type="stall_write"} 912.0
-mssql_io_stall{database="ISTE_TP07115_TS49311",type="stall_queued_read"} 0.0
-mssql_io_stall{database="ISTE_TP07115_TS49311",type="stall_queued_write"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS57561",type="stall_read"} 780.0
-mssql_io_stall{database="ISTE_TP07137_TS57561",type="stall_write"} 1180.0
-mssql_io_stall{database="ISTE_TP07137_TS57561",type="stall_queued_read"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS57561",type="stall_queued_write"} 0.0
-mssql_io_stall{database="ISTE_TP07115_TS48857",type="stall_read"} 6037.0
-mssql_io_stall{database="ISTE_TP07115_TS48857",type="stall_write"} 1494.0
-mssql_io_stall{database="ISTE_TP07115_TS48857",type="stall_queued_read"} 0.0
-mssql_io_stall{database="ISTE_TP07115_TS48857",type="stall_queued_write"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS58035",type="stall_read"} 67.0
-mssql_io_stall{database="ISTE_TP07137_TS58035",type="stall_write"} 14.0
-mssql_io_stall{database="ISTE_TP07137_TS58035",type="stall_queued_read"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS58035",type="stall_queued_write"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS58071",type="stall_read"} 66.0
-mssql_io_stall{database="ISTE_TP07137_TS58071",type="stall_write"} 17.0
-mssql_io_stall{database="ISTE_TP07137_TS58071",type="stall_queued_read"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS58071",type="stall_queued_write"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS58031",type="stall_read"} 67.0
-mssql_io_stall{database="ISTE_TP07137_TS58031",type="stall_write"} 15.0
-mssql_io_stall{database="ISTE_TP07137_TS58031",type="stall_queued_read"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS58031",type="stall_queued_write"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS58009",type="stall_read"} 66.0
-mssql_io_stall{database="ISTE_TP07137_TS58009",type="stall_write"} 14.0
-mssql_io_stall{database="ISTE_TP07137_TS58009",type="stall_queued_read"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS58009",type="stall_queued_write"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS57389",type="stall_read"} 1364.0
-mssql_io_stall{database="ISTE_TP07137_TS57389",type="stall_write"} 1047.0
-mssql_io_stall{database="ISTE_TP07137_TS57389",type="stall_queued_read"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS57389",type="stall_queued_write"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS57485",type="stall_read"} 179.0
-mssql_io_stall{database="ISTE_TP07137_TS57485",type="stall_write"} 371.0
-mssql_io_stall{database="ISTE_TP07137_TS57485",type="stall_queued_read"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS57485",type="stall_queued_write"} 0.0
-mssql_io_stall{database="ISTE_TP07115_TS48765",type="stall_read"} 6387.0
-mssql_io_stall{database="ISTE_TP07115_TS48765",type="stall_write"} 2241.0
-mssql_io_stall{database="ISTE_TP07115_TS48765",type="stall_queued_read"} 0.0
-mssql_io_stall{database="ISTE_TP07115_TS48765",type="stall_queued_write"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS57443",type="stall_read"} 558.0
-mssql_io_stall{database="ISTE_TP07137_TS57443",type="stall_write"} 751.0
-mssql_io_stall{database="ISTE_TP07137_TS57443",type="stall_queued_read"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS57443",type="stall_queued_write"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS58015",type="stall_read"} 1281.0
-mssql_io_stall{database="ISTE_TP07137_TS58015",type="stall_write"} 3180.0
-mssql_io_stall{database="ISTE_TP07137_TS58015",type="stall_queued_read"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS58015",type="stall_queued_write"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS58033",type="stall_read"} 68.0
-mssql_io_stall{database="ISTE_TP07137_TS58033",type="stall_write"} 16.0
-mssql_io_stall{database="ISTE_TP07137_TS58033",type="stall_queued_read"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS58033",type="stall_queued_write"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS57571",type="stall_read"} 2116.0
-mssql_io_stall{database="ISTE_TP07137_TS57571",type="stall_write"} 183.0
-mssql_io_stall{database="ISTE_TP07137_TS57571",type="stall_queued_read"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS57571",type="stall_queued_write"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS58029",type="stall_read"} 70.0
-mssql_io_stall{database="ISTE_TP07137_TS58029",type="stall_write"} 15.0
-mssql_io_stall{database="ISTE_TP07137_TS58029",type="stall_queued_read"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS58029",type="stall_queued_write"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS57469",type="stall_read"} 461.0
-mssql_io_stall{database="ISTE_TP07137_TS57469",type="stall_write"} 320.0
-mssql_io_stall{database="ISTE_TP07137_TS57469",type="stall_queued_read"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS57469",type="stall_queued_write"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS57421",type="stall_read"} 1060.0
-mssql_io_stall{database="ISTE_TP07137_TS57421",type="stall_write"} 636.0
-mssql_io_stall{database="ISTE_TP07137_TS57421",type="stall_queued_read"} 0.0
-mssql_io_stall{database="ISTE_TP07137_TS57421",type="stall_queued_write"} 0.0
 # HELP mssql_io_stall_total Wait time (ms) of stall since last restart
 # TYPE mssql_io_stall_total gauge
-mssql_io_stall_total{database="master"} 1587.0
-mssql_io_stall_total{database="tempdb"} 89417.0
-mssql_io_stall_total{database="model"} 155.0
-mssql_io_stall_total{database="msdb"} 710.0
-mssql_io_stall_total{database="ISTE_TP07137_TS57615"} 164.0
-mssql_io_stall_total{database="ISTE_TP07137_TS57393"} 1731.0
-mssql_io_stall_total{database="ISTE_TP07137_TS57367"} 1492.0
-mssql_io_stall_total{database="ISTE_ICM_DEV"} 1057.0
-mssql_io_stall_total{database="ISTE_TP07141"} 413.0
-mssql_io_stall_total{database="ISTE_TP07137"} 32502.0
-mssql_io_stall_total{database="ISTE_TP07137_TS57695"} 177.0
-mssql_io_stall_total{database="ISTE_TP07115_TS48733"} 10029.0
-mssql_io_stall_total{database="ISTE_TP07137_TS58013"} 3236.0
-mssql_io_stall_total{database="ISTE_TP07137_TS57887"} 71.0
-mssql_io_stall_total{database="ISTE_TP07115_TS48781"} 3812.0
-mssql_io_stall_total{database="ISTE_TP07140"} 29706.0
-mssql_io_stall_total{database="ISTE_TP07137_TS57437"} 1653.0
-mssql_io_stall_total{database="ISTE_TP07137_TS57419"} 76.0
-mssql_io_stall_total{database="ISTE_TP07137_TS58019"} 1424.0
-mssql_io_stall_total{database="ISTE_TP07137_TS57401"} 70.0
-mssql_io_stall_total{database="ISTE_TP07137_TS58023"} 73.0
-mssql_io_stall_total{database="ISTE_TP07115_TS49311"} 4441.0
-mssql_io_stall_total{database="ISTE_TP07137_TS57561"} 1191.0
-mssql_io_stall_total{database="ISTE_TP07115_TS48857"} 6983.0
-mssql_io_stall_total{database="ISTE_TP07137_TS58035"} 71.0
-mssql_io_stall_total{database="ISTE_TP07137_TS58071"} 70.0
-mssql_io_stall_total{database="ISTE_TP07137_TS58031"} 71.0
-mssql_io_stall_total{database="ISTE_TP07137_TS58009"} 71.0
-mssql_io_stall_total{database="ISTE_TP07137_TS57389"} 1577.0
-mssql_io_stall_total{database="ISTE_TP07137_TS57485"} 383.0
-mssql_io_stall_total{database="ISTE_TP07115_TS48765"} 8628.0
-mssql_io_stall_total{database="ISTE_TP07137_TS57443"} 763.0
-mssql_io_stall_total{database="ISTE_TP07137_TS58015"} 3193.0
-mssql_io_stall_total{database="ISTE_TP07137_TS58033"} 73.0
-mssql_io_stall_total{database="ISTE_TP07137_TS57571"} 2117.0
-mssql_io_stall_total{database="ISTE_TP07137_TS58029"} 74.0
-mssql_io_stall_total{database="ISTE_TP07137_TS57469"} 464.0
-mssql_io_stall_total{database="ISTE_TP07137_TS57421"} 1068.0
+mssql_io_stall_total{database="master"} 315.0
+mssql_io_stall_total{database="tempdb"} 58.0
+mssql_io_stall_total{database="model"} 61.0
+mssql_io_stall_total{database="msdb"} 137.0
 # HELP mssql_kill_connection_errors Number of kill connection errors/sec since last restart
 # TYPE mssql_kill_connection_errors gauge
 mssql_kill_connection_errors 0.0
 # HELP mssql_log_growths Total number of times the transaction log for the database has been expanded since last restart.
 # TYPE mssql_log_growths gauge
-mssql_log_growths{database="ISTE_TP07171"} 0.0
-mssql_log_growths{database="ISTE_TP07170_TS79174"} 0.0
-mssql_log_growths{database="ISTE_1_TP03844"} 0.0
-mssql_log_growths{database="ISTE_TP07170"} 0.0
 mssql_log_growths{database="tempdb"} 0.0
 mssql_log_growths{database="model"} 0.0
-mssql_log_growths{database="ISTE_ICM_DEV"} 0.0
 mssql_log_growths{database="msdb"} 0.0
 mssql_log_growths{database="mssqlsystemresource"} 0.0
 mssql_log_growths{database="master"} 0.0
@@ -328,48 +142,64 @@ mssql_log_growths{database="master"} 0.0
 mssql_log_total_size_in_bytes 2.08896e+06
 # HELP mssql_log_used_space_in_bytes Used log space in bytes
 # TYPE mssql_log_used_space_in_bytes gauge
-mssql_log_used_space_in_bytes 966656.0
+mssql_log_used_space_in_bytes 999424.0
 # HELP mssql_log_used_space_in_percentage Used log space in percentage
 # TYPE mssql_log_used_space_in_percentage gauge
-mssql_log_used_space_in_percentage 46.27450942993164
+mssql_log_used_space_in_percentage 47.843135833740234
 # HELP mssql_log_space_in_bytes_since_last_backup Log space in bytes since last backup
 # TYPE mssql_log_space_in_bytes_since_last_backup gauge
-mssql_log_space_in_bytes_since_last_backup 548864.0
+mssql_log_space_in_bytes_since_last_backup 577536.0
 # HELP mssql_page_fault_count Number of page faults since last restart
 # TYPE mssql_page_fault_count gauge
 mssql_page_fault_count 0.0
 # HELP mssql_memory_utilization_percentage Percentage of memory utilization
 # TYPE mssql_memory_utilization_percentage gauge
-mssql_memory_utilization_percentage 29.0
+mssql_memory_utilization_percentage 100.0
+# HELP mssql_virtual_address_space_committed_kb SQL Server resident memory size (AKA working set).
+# TYPE mssql_virtual_address_space_committed_kb gauge
+mssql_virtual_address_space_committed_kb 4.194304e+06
+# HELP mssql_physical_memory_in_use_kb SQL Server committed virtual memory size.
+# TYPE mssql_physical_memory_in_use_kb gauge
+mssql_physical_memory_in_use_kb 199872.0
 # HELP mssql_total_physical_memory_kb Total physical memory in KB
 # TYPE mssql_total_physical_memory_kb gauge
-mssql_total_physical_memory_kb 7.9095808e+07
+mssql_total_physical_memory_kb 1.622016e+06
 # HELP mssql_available_physical_memory_kb Available physical memory in KB
 # TYPE mssql_available_physical_memory_kb gauge
-mssql_available_physical_memory_kb 6.0057148e+07
+mssql_available_physical_memory_kb 1.622016e+06
 # HELP mssql_total_page_file_kb Total page file in KB
 # TYPE mssql_total_page_file_kb gauge
-mssql_total_page_file_kb 7.9095808e+07
+mssql_total_page_file_kb 1.622016e+06
 # HELP mssql_available_page_file_kb Available page file in KB
 # TYPE mssql_available_page_file_kb gauge
-mssql_available_page_file_kb 6.0057148e+07
+mssql_available_page_file_kb 1.622016e+06
 # HELP mssql_page_life_expectancy Indicates the minimum number of seconds a page will stay in the buffer pool on this node without references.\n            The traditional advice from Microsoft used to be that the PLE should remain above 300 seconds
 # TYPE mssql_page_life_expectancy gauge
-mssql_page_life_expectancy 14820.0
-# HELP mssql_uptime Gauge metric with uptime in days of the Instance.
-# TYPE mssql_uptime gauge
-mssql_uptime 1.0
-# HELP mssql_user_errors Number of user errors/sec since last restart
-# TYPE mssql_user_errors gauge
-mssql_user_errors 179996.0
-# HELP mssql_up UP status
+mssql_page_life_expectancy 12280.0
+# HELP mssql_performance_counters Several performance counters of SQL Server.
+# TYPE mssql_performance_counters gauge
+mssql_performance_counters{counter_name="user_connections"} 3.0
+mssql_performance_counters{counter_name="connection_memory_kb"} 1288.0
+mssql_performance_counters{counter_name="lock_memory_kb"} 672.0
+mssql_performance_counters{counter_name="lock_blocks_allocated"} 0.0
+mssql_performance_counters{counter_name="lock_blocks"} 0.0
+mssql_performance_counters{counter_name="lock_owner_blocks"} 0.0
+mssql_performance_counters{counter_name="target_server_memory_kb"} 1.622016e+06
+mssql_performance_counters{counter_name="total_server_memory_kb"} 199872.0
+# HELP mssql_up MsSQL exporter UP status
 # TYPE mssql_up gauge
 mssql_up 1.0
+# HELP mssql_uptime Gauge metric with uptime in days of the Instance.
+# TYPE mssql_uptime gauge
+mssql_uptime 0.0
+# HELP mssql_user_errors Number of user errors/sec since last restart
+# TYPE mssql_user_errors gauge
+mssql_user_errors 1994.0
 ```
 
 ### Build and Push
 
 ```
- docker build -t intershopde/ish-monitoring-mssqldb-exporter:latest .
- docker push intershopde/ish-monitoring-mssqldb-exporter:latest
+ docker build -t ishcloudopsicp.azurecr.io/intershop/ish-monitoring-mssqldb-exporter:latest .
+ docker push ishcloudopsicp.azurecr.io/intershop/ish-monitoring-mssqldb-exporter:latest
 ```

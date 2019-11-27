@@ -6,7 +6,7 @@ MsSQL Exporter for Prometheus in python. Metrics are scraped by scheduler, and t
 Run `docker-compose up`. When the image is not build yet, please run `docker-compose up --build`
 
 After launching up, metrics show up in `http://localhost:8000/metrics`,
-by using promql `{__name__=~".+",app="prometheus-mssql-exporter"}`
+by using promql `{__name__=~".+",job="prometheusMssqlExporter"}`
 
 To rebuild the image please run `docker-compose up --build`
 

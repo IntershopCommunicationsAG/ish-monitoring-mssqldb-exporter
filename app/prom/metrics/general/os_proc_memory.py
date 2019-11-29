@@ -16,15 +16,15 @@ class OsProcessMemory(AbstractMetric):
             'mssql_page_fault_count'
             , '''Number of page faults since last restart'''
             , registry=registry)
-        self.percentage_metric = Gauge(
+        self.memory_utilization_percentage_metric = Gauge(
             'mssql_memory_utilization_percentage'
             , '''Percentage of memory utilization'''
             , registry=registry)
-        self.physical_memory_in_use_metric = Gauge(
+        self.virtual_address_space_committed_metric = Gauge(
             'mssql_virtual_address_space_committed_kb'
             , '''SQL Server resident memory size (AKA working set).'''
             , registry=registry)
-        self.virtual_address_space_committed_metric = Gauge(
+        self.physical_memory_in_use_metric = Gauge(
             'mssql_physical_memory_in_use_kb'
             , '''SQL Server committed virtual memory size.'''
             , registry=registry)
@@ -48,6 +48,6 @@ class OsProcessMemory(AbstractMetric):
         """
         row = next(rows)
         self.count_metric.set(row[COUNT])
-        self.percentage_metric.set(row[PERCENTAGE])
+        self.memory_utilization_percentage_metric.set(row[PERCENTAGE])
         self.physical_memory_in_use_metric.set(row[IN_USE])
         self.virtual_address_space_committed_metric.set(row[SPACE_COMMITTED])

@@ -16,7 +16,7 @@ class TestOsProcessMemory(TestCase):
         samples = next(iter(os_process_memory.count_metric.collect())).samples
         self.assertEqual(test_data[COUNT], next(iter(samples)).value)
 
-        samples = next(iter(os_process_memory.percentage_metric.collect())).samples
+        samples = next(iter(os_process_memory.memory_utilization_percentage_metric.collect())).samples
         self.assertEqual(test_data[PERCENTAGE], next(iter(samples)).value)
 
         samples = next(iter(os_process_memory.physical_memory_in_use_metric.collect())).samples

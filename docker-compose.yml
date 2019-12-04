@@ -30,9 +30,9 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - MSSSQL_SERVER=sqlserver
-      - MSSSQL_USERNAME=SA
-      - MSSSQL_PASSWORD=YourStrong!Passw0rd
+      - MSSQL_SERVER=sqlserver
+      - MSSQL_USERNAME=SA
+      - MSSQL_PASSWORD=YourStrong!Passw0rd
       - FLASK_CONFIG=config.DevelopmentConfig
       - COLLECT_METRICS_INTERVAL_SEC=15
     networks:

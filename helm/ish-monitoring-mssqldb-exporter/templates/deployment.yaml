@@ -1,0 +1,88 @@
+{{- if and .Values.mssql.passwordSecret .Values.mssql.password -}}
+{{ fail (printf "ERROR: only one of .Values.mssql.passwordSecret and .Values.mssql.password must be defined") }}
+{{- end -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "ish-monitoring-mssqldb-exporter.fullname" . }}
+  labels:
+    app: {{ template "ish-monitoring-mssqldb-exporter.name" . }}
+    chart: {{ template "ish-monitoring-mssqldb-exporter.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "ish-monitoring-mssqldb-exporter.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "ish-monitoring-mssqldb-exporter.name" . }}
+        release: {{ .Release.Name }}
+{{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | trim | indent 8 }}
+{{- end }}
+    spec:
+      serviceAccountName: {{ template "ish-monitoring-mssqldb-exporter.serviceAccountName" . }}
+      containers:
+        - name: {{ .Chart.Name }}
+          env:
+          - name: MSSQL_SERVER
+            value: {{ .Values.mssql.server }}
+          - name: FLASK_CONFIG
+            value: {{ .Values.flask.config }}
+          - name: COLLECT_METRICS_INTERVAL_SEC
+            value: {{ .Values.collectMetricsIntervalSec | quote }}
+          - name: MSSQL_PORT
+            value: {{ .Values.mssql.port | quote }}
+          - name: MSSQL_USERNAME
+            value: {{ .Values.mssql.user }}
+          - name: MSSQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+          {{- if .Values.mssql.passwordSecret }}
+                name: {{ .Values.mssql.passwordSecret.name }}
+                key: {{ .Values.mssql.passwordSecret.key }}
+          {{- else }}
+                name: {{ template "ish-monitoring-mssqldb-exporter.fullname" . }}
+                key: mssql_password
+          {{- end }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.targetPort }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+{{- with .Values.extraContainers }}
+{{ tpl . $ | indent 8 }}
+{{- end }}
+      securityContext:
+{{ toYaml .Values.securityContext | indent 8 }}
+     {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      volumes:
+{{- with .Values.extraVolumes }}
+{{ tpl . $ | indent 6 }}
+{{- end }}

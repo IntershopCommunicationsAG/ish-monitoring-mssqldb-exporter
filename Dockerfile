@@ -1,4 +1,4 @@
-ARG PYTHON_VERSION=3.7
+ARG PYTHON_VERSION=3.8.1
 
 FROM python:${PYTHON_VERSION}-slim-buster
 
@@ -9,8 +9,13 @@ WORKDIR /usr/src/app
 
 COPY ./requirements.txt /usr/src/app/requirements.txt
 
-RUN apt-get update -qqy && apt-get install -qqy gcc libc-dev && \
-    pip install -r requirements.txt
+RUN apt-get update && \
+    apt-get install -y unixodbc-dev gcc g++ make --no-install-recommends && \
+    SLUGIFY_USES_TEXT_UNIDECODE=yes pip install -r requirements.txt && \
+    apt-get remove -y --purge gcc g++ && \
+    apt-get autoremove -y && \
+    apt-get clean -y && \
+    rm -rf /var/lib/apt/lists/*
 
 COPY . /usr/src/app
 

@@ -1,6 +1,6 @@
 import logging
 import socket
-from pymssql import connect, DatabaseError, InterfaceError, OperationalError
+from pyodbc import connect, DatabaseError, InterfaceError, OperationalError
 
 from flask import current_app as app
 
@@ -22,7 +22,7 @@ def get_connection():
     user = app.config["USERNAME"]
     password = app.config["PASSWORD"]
     try:
-        conn = connect(server=server, port=port, user=user, password=password)
+        conn = connect('DRIVER={{ODBC Driver 13 for SQL Server}};SERVER={};PORT={};UID={};PWD={}'.format(server, port, user, password))
     except OperationalError:
         raise InterfaceError
     return conn

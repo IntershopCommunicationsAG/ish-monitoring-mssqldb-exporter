@@ -2,7 +2,7 @@ import logging
 from unittest import TestCase
 from unittest.mock import MagicMock
 
-from pymssql import DatabaseError
+from pyodbc import DatabaseError
 
 from app.prom.database.util import get_query_result
 

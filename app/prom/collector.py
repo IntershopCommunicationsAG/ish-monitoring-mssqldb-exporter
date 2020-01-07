@@ -3,7 +3,7 @@ Collect metrics
 """
 import logging
 
-from pymssql import InterfaceError
+from pyodbc import InterfaceError
 
 from app.prom.database import util as db_util
 

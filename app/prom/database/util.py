@@ -17,7 +17,7 @@ def is_port_open():
         return False
 
 def get_connection():
-    driver = app.config["DRIVER"]
+    driver = '{' + app.config["DRIVER"] + '}'
     server = app.config["SERVER"]
     port = app.config["PORT"]
     user = app.config["USERNAME"]

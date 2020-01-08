@@ -10,7 +10,7 @@ import os
 class BaseConfig:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    DRIVER = os.getenv('MSSQL_DRIVER', '{ODBC Driver 13 for SQL Server}')
+    DRIVER = os.getenv('MSSQL_DRIVER', 'ODBC Driver 13 for SQL Server')
     SERVER = os.getenv('MSSQL_SERVER', 'localhost')
     PORT = os.getenv('MSSQL_PORT', 1433)
     USERNAME = os.getenv('MSSQL_USERNAME', 'sa')

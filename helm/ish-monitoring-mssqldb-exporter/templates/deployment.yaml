@@ -29,6 +29,8 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           env:
+          - name: MSSQL_DRIVER
+            value: {{ .Values.mssql.driver }}
           - name: MSSQL_SERVER
             value: {{ .Values.mssql.server }}
           - name: FLASK_CONFIG

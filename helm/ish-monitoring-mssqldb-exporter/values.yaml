@@ -65,6 +65,7 @@ flask:
 collectMetricsIntervalSec: 15
 
 mssql:
+  driver: {ODBC Driver 17 for SQL Server}
   server: <someserver>
   port: "1433"
   user: SA

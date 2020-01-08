@@ -10,10 +10,11 @@ import os
 class BaseConfig:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    SERVER = os.getenv('MSSQL_SERVER', 'sqlserver')
+    DRIVER = os.getenv('MSSQL_DRIVER', '{ODBC Driver 13 for SQL Server}')
+    SERVER = os.getenv('MSSQL_SERVER', 'localhost')
     PORT = os.getenv('MSSQL_PORT', 1433)
     USERNAME = os.getenv('MSSQL_USERNAME', 'sa')
-    PASSWORD = os.getenv('MSSQL_PASSWORD', 'Intersh0p')
+    PASSWORD = os.getenv('MSSQL_PASSWORD', 'YourStrong!Passw0rd')
     COLLECT_METRICS_INTERVAL_SEC = int(
         os.getenv('COLLECT_METRICS_INTERVAL_SEC', 120))
     DEBUG = False

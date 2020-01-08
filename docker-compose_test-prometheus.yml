@@ -30,8 +30,9 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - MSSQL_SERVER=jengmssql.rnd.j.intershop.de
+      - MSSQL_DRIVER='{ODBC Driver 17 for SQL Server}'
+      - MSSQL_SERVER=<someserver>
       - MSSQL_USERNAME=SA
-      - MSSQL_PASSWORD=Intersh0p
+      - MSSQL_PASSWORD=<somepassword>
       - FLASK_CONFIG=config.DevelopmentConfig
       - COLLECT_METRICS_INTERVAL_SEC=15

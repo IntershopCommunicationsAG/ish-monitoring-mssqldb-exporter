@@ -17,12 +17,13 @@ def is_port_open():
         return False
 
 def get_connection():
+    driver = app.config["DRIVER"]
     server = app.config["SERVER"]
     port = app.config["PORT"]
     user = app.config["USERNAME"]
     password = app.config["PASSWORD"]
     try:
-        conn = connect('DRIVER={{ODBC Driver 13 for SQL Server}};SERVER={};PORT={};UID={};PWD={}'.format(server, port, user, password))
+        conn = connect('DRIVER={};SERVER={};PORT={};UID={};PWD={}'.format(driver, server, port, user, password))
     except OperationalError:
         raise InterfaceError
     return conn

@@ -30,6 +30,7 @@ services:
     ports:
       - "8000:8000"
     environment:
+      - MSSQL_DRIVER={ODBC Driver 17 for SQL Server}
       - MSSQL_SERVER=sqlserver
       - MSSQL_USERNAME=SA
       - MSSQL_PASSWORD=YourStrong!Passw0rd

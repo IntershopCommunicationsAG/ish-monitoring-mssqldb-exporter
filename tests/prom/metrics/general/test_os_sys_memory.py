@@ -3,15 +3,21 @@ from unittest import TestCase
 from prometheus_client.registry import CollectorRegistry
 
 from app.prom.metrics.general.os_sys_memory import OsSysMemory, TOTAL_MEM, AVAILABLE_MEM, AVAILABLE_PAGE, TOTAL_PAGE
+from tests.helpers import setUpApp, with_context
 
 
 class TestOsSysMemory(TestCase):
+
+    def setUp(self):
+        setUpApp(self)
+
+    @with_context
     def test_should_collect(self):
         test_data = {TOTAL_MEM: 100, AVAILABLE_MEM: 10, TOTAL_PAGE: 10, AVAILABLE_PAGE: 1}
 
         os_sys_mem = OsSysMemory(CollectorRegistry())
 
-        os_sys_mem.collect(rows=(_ for _ in [test_data]))
+        os_sys_mem.collect(self.app, rows=(_ for _ in [test_data]))
 
         samples = next(iter(os_sys_mem.total_mem_metric.collect())).samples
 

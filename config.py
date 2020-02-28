@@ -24,6 +24,8 @@ class BaseConfig:
 class TestingConfig(BaseConfig):
     DEBUG = True
     TESTING = True
+    SERVER = os.getenv('MSSQL_SERVER', 'my_host')
+    PORT = os.getenv('MSSQL_PORT', 1433)
 
 
 class DevelopmentConfig(BaseConfig):

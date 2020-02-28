@@ -2,8 +2,8 @@ import logging
 
 from prometheus_client import Gauge
 
-from app.prom.metrics.abstract_metric import AbstractMetric
 from app.prom.database import util as db_util
+from app.prom.metrics.abstract_metric import AbstractMetric
 
 UP = '''mssql_up'''
 
@@ -18,7 +18,11 @@ class Up(AbstractMetric):
         """
         self.is_up_metric = True
 
-        self.metric = Gauge('mssql_up', 'MsSQL exporter UP status', registry=registry)
+        self.metric = Gauge(
+            'mssql_up'
+            , 'MsSQL exporter UP status'
+            , labelnames=['server', 'port']
+            , registry=registry)
 
         super().__init__()
 
@@ -31,8 +35,12 @@ class Up(AbstractMetric):
 
         with app.app_context():
             if db_util.is_port_open():
-                self.metric.set(1)
+                self.metric \
+                    .labels(server=db_util.get_server(), port=db_util.get_port()) \
+                    .set(1)
                 LOGGER.info("MsSQLDB is UP")
             else:
-                self.metric.set(0)
+                self.metric \
+                    .labels(server=db_util.get_server(), port=db_util.get_port()) \
+                    .set(0)
                 LOGGER.info("MsSQLDB is DOWN")

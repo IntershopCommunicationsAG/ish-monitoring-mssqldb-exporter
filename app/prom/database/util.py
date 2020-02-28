@@ -28,6 +28,11 @@ def get_connection():
         raise InterfaceError
     return conn
 
+def get_server():
+    return app.config["SERVER"]
+
+def get_port():
+    return app.config["PORT"]
 
 def get_query_result(conn, query):
     try:

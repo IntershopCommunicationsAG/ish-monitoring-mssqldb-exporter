@@ -10,7 +10,7 @@ class PromInitializer:
     Initialize prom that should be used during app creation and shared in flask context(current_app)
     """
 
-    def __init__(self, app):
+    def __init__(self):
         self.registry = CollectorRegistry()
 
         self.metrics = [

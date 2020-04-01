@@ -46,7 +46,7 @@ def create_app():
 
     # prom extension
     from app.prom.prom_init import PromInitializer
-    app.prom_init = PromInitializer(app)
+    app.prom_init = PromInitializer()
 
     # Start after app is created, manage.py calls it even when in testing, so should be avoided
     if not app.testing:

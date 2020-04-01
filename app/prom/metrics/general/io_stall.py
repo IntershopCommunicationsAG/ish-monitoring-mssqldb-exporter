@@ -61,10 +61,10 @@ class IOStall(AbstractMetric):
                     .labels(server=db_util.get_server(), port=db_util.get_port(), database=row[NAME]) \
                     .set(row[STALL])
 
-            self._set_metric(row, READ)
-            self._set_metric(row, WRITE)
-            self._set_metric(row, QUEUED_READ)
-            self._set_metric(row, QUEUED_WRITE)
+                self._set_metric(row, READ)
+                self._set_metric(row, WRITE)
+                self._set_metric(row, QUEUED_READ)
+                self._set_metric(row, QUEUED_WRITE)
 
     def _set_metric(self, row, stall_type):
         self.metric \

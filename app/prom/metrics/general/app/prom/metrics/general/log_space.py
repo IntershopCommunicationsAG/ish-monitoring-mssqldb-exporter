@@ -3,10 +3,10 @@ from prometheus_client import Gauge
 from app.prom.database import util as db_util
 from app.prom.metrics.abstract_metric import AbstractMetric
 
-NAME = '''name'''
 TOTAL_LOG_SIZE = '''total_log_size_in_bytes'''
 USED_LOG_SPACE = '''used_log_space_in_bytes'''
 USED_LOG_SPACE_PERCENTAGE = '''used_log_space_in_percent'''
+USED_LOG_SPACE_SINCE_START = '''log_space_in_bytes_since_last_backup'''
 
 
 class LogSpace(AbstractMetric):
@@ -18,34 +18,32 @@ class LogSpace(AbstractMetric):
         self.total_log_size_in_bytes_metric = Gauge(
             'mssql_log_total_size_in_bytes'
             , '''Total log size in bytes'''
-            , labelnames=['server', 'port', 'database']
+            , labelnames=['server', 'port']
             , registry=registry)
         self.used_log_space_in_bytes_metric = Gauge(
             'mssql_log_used_space_in_bytes'
             , '''Used log space in bytes'''
-            , labelnames=['server', 'port', 'database']
+            , labelnames=['server', 'port']
             , registry=registry)
         self.used_log_space_in_percentage_metric = Gauge(
             'mssql_log_used_space_in_percentage'
             , '''Used log space in percentage'''
-            , labelnames=['server', 'port', 'database']
+            , labelnames=['server', 'port']
+            , registry=registry)
+        self.log_space_in_bytes_since_last_backup_metric = Gauge(
+            'mssql_log_space_in_bytes_since_last_backup'
+            , '''Log space in bytes since last backup'''
+            , labelnames=['server', 'port']
             , registry=registry)
 
         self.query = '''
             SELECT
-             lu.instance_name AS %s
-             , ls.cntr_value AS %s
-             , lu.cntr_value AS %s
-             , CAST(CAST(lu.cntr_value AS FLOAT) / CAST(ls.cntr_value AS FLOAT) AS DECIMAL(18,2)) * 100 AS %s
-            FROM sys.dm_os_performance_counters AS lu WITH (NOLOCK)
-            INNER JOIN sys.dm_os_performance_counters AS ls WITH (NOLOCK)
-            ON lu.instance_name = ls.instance_name
-            WHERE lu.counter_name LIKE N'Log File(s) Used Size (KB)%%'
-            AND ls.counter_name LIKE N'Log File(s) Size (KB)%%'
-            AND ls.cntr_value > 0
-            AND ls.instance_name <> '_Total'
-            ORDER BY lu.instance_name OPTION (RECOMPILE);
-        ''' % (NAME, TOTAL_LOG_SIZE, USED_LOG_SPACE, USED_LOG_SPACE_PERCENTAGE)
+             total_log_size_in_bytes AS %s
+             , used_log_space_in_bytes AS %s
+             , used_log_space_in_percent AS %s
+             , log_space_in_bytes_since_last_backup AS %s
+            FROM sys.dm_db_log_space_usage
+        ''' % (TOTAL_LOG_SIZE, USED_LOG_SPACE, USED_LOG_SPACE_PERCENTAGE, USED_LOG_SPACE_SINCE_START)
 
         super().__init__()
 
@@ -58,11 +56,14 @@ class LogSpace(AbstractMetric):
         with app.app_context():
             row = next(rows)
             self.total_log_size_in_bytes_metric \
-                .labels(server=db_util.get_server(), port=db_util.get_port(), database=row[NAME]) \
+                .labels(server=db_util.get_server(), port=db_util.get_port()) \
                 .set(row[TOTAL_LOG_SIZE])
             self.used_log_space_in_bytes_metric \
-                .labels(server=db_util.get_server(), port=db_util.get_port(), database=row[NAME]) \
+                .labels(server=db_util.get_server(), port=db_util.get_port()) \
                 .set(row[USED_LOG_SPACE])
             self.used_log_space_in_percentage_metric \
-                .labels(server=db_util.get_server(), port=db_util.get_port(), database=row[NAME]) \
+                .labels(server=db_util.get_server(), port=db_util.get_port()) \
                 .set(row[USED_LOG_SPACE_PERCENTAGE])
+            self.log_space_in_bytes_since_last_backup_metric \
+                .labels(server=db_util.get_server(), port=db_util.get_port()) \
+                .set(row[USED_LOG_SPACE_SINCE_START])

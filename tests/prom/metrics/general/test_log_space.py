@@ -2,7 +2,7 @@ from unittest import TestCase
 
 from prometheus_client.registry import CollectorRegistry
 
-from app.prom.metrics.general.log_space import LogSpace, NAME, TOTAL_LOG_SIZE, USED_LOG_SPACE, USED_LOG_SPACE_PERCENTAGE
+from app.prom.metrics.general.log_space import LogSpace, DATABASE_NAME, TOTAL_LOG_SIZE, USED_LOG_SPACE, USED_LOG_SPACE_PERCENTAGE
 from tests.helpers import setUpApp, with_context
 
 
@@ -13,7 +13,7 @@ class TestLogSpace(TestCase):
 
     @with_context
     def test_should_collect(self):
-        test_data = {NAME: 'test_1', TOTAL_LOG_SIZE: 100, USED_LOG_SPACE: 10, USED_LOG_SPACE_PERCENTAGE: 10}
+        test_data = {DATABASE_NAME: 'test_1', TOTAL_LOG_SIZE: 100, USED_LOG_SPACE: 10, USED_LOG_SPACE_PERCENTAGE: 10}
 
         log_space = LogSpace(CollectorRegistry())
 

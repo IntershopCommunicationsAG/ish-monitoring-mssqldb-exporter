@@ -3,7 +3,7 @@ from prometheus_client import Gauge
 from app.prom.database import util as db_util
 from app.prom.metrics.abstract_metric import AbstractMetric
 
-NAME = '''name'''
+DATABASE_NAME = '''database_name'''
 TOTAL_LOG_SIZE = '''total_log_size_in_bytes'''
 USED_LOG_SPACE = '''used_log_space_in_bytes'''
 USED_LOG_SPACE_PERCENTAGE = '''used_log_space_in_percent'''
@@ -33,7 +33,7 @@ class LogSpace(AbstractMetric):
 
         self.query = '''
             SELECT
-             lu.instance_name AS %s
+             rtrim(lu.instance_name) AS %s
              , ls.cntr_value AS %s
              , lu.cntr_value AS %s
              , CAST(CAST(lu.cntr_value AS FLOAT) / CAST(ls.cntr_value AS FLOAT) AS DECIMAL(18,2)) * 100 AS %s
@@ -44,8 +44,7 @@ class LogSpace(AbstractMetric):
             AND ls.counter_name LIKE N'Log File(s) Size (KB)%%'
             AND ls.cntr_value > 0
             AND ls.instance_name <> '_Total'
-            ORDER BY lu.instance_name OPTION (RECOMPILE);
-        ''' % (NAME, TOTAL_LOG_SIZE, USED_LOG_SPACE, USED_LOG_SPACE_PERCENTAGE)
+        ''' % (DATABASE_NAME, TOTAL_LOG_SIZE, USED_LOG_SPACE, USED_LOG_SPACE_PERCENTAGE)
 
         super().__init__()
 
@@ -56,13 +55,13 @@ class LogSpace(AbstractMetric):
         :return:
         """
         with app.app_context():
-            row = next(rows)
-            self.total_log_size_in_bytes_metric \
-                .labels(server=db_util.get_server(), port=db_util.get_port(), database=row[NAME]) \
-                .set(row[TOTAL_LOG_SIZE])
-            self.used_log_space_in_bytes_metric \
-                .labels(server=db_util.get_server(), port=db_util.get_port(), database=row[NAME]) \
-                .set(row[USED_LOG_SPACE])
-            self.used_log_space_in_percentage_metric \
-                .labels(server=db_util.get_server(), port=db_util.get_port(), database=row[NAME]) \
-                .set(row[USED_LOG_SPACE_PERCENTAGE])
+            for row in rows:
+                self.total_log_size_in_bytes_metric \
+                    .labels(server=db_util.get_server(), port=db_util.get_port(), database=row[DATABASE_NAME]) \
+                    .set(row[TOTAL_LOG_SIZE])
+                self.used_log_space_in_bytes_metric \
+                    .labels(server=db_util.get_server(), port=db_util.get_port(), database=row[DATABASE_NAME]) \
+                    .set(row[USED_LOG_SPACE])
+                self.used_log_space_in_percentage_metric \
+                    .labels(server=db_util.get_server(), port=db_util.get_port(), database=row[DATABASE_NAME]) \
+                    .set(row[USED_LOG_SPACE_PERCENTAGE])

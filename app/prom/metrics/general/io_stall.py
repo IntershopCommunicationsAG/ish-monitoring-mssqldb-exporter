@@ -4,14 +4,15 @@ from app.prom.database import util as db_util
 from app.prom.metrics.abstract_metric import AbstractMetric
 
 QUEUED_WRITE = '''stall_queued_write'''
-
 QUEUED_READ = '''stall_queued_read'''
 
-STALL = '''io_stall'''
+AVG_IO_STALL = '''avg_io_stall'''
+MAX_IO_STALL = '''max_io_stall'''
 
-WRITE = '''stall_write'''
-
-READ = '''stall_read'''
+AVG_WRITE = '''avg_stall_write'''
+AVG_READ = '''avg_stall_read'''
+MAX_WRITE = '''max_stall_write'''
+MAX_READ = '''max_stall_read'''
 
 NAME = '''name'''
 
@@ -24,28 +25,31 @@ class IOStall(AbstractMetric):
         """
         self.metric = Gauge(
             'mssql_io_stall'
-            , 'Wait time (ms) of stall since last restart'
+            , 'Average and maximum Wait time (ms) of stall io since last restart'
             , labelnames=['server', 'port', 'database', 'type']
-            , registry=registry)
-
-        self.metric_total = Gauge(
-            'mssql_io_stall_total'
-            , 'Wait time (ms) of stall since last restart'
-            , labelnames=['server', 'port', 'database']
             , registry=registry)
 
         self.query = ('''
             SELECT
-             cast(DB_Name(a.database_id) AS varchar) AS %s
-             , max(io_stall_read_ms) AS %s
-             , max(io_stall_write_ms) AS %s
-             , max(io_stall) AS %s
+             CAST(DB_Name(a.database_id) AS varchar) AS %s
+             , AVG(CASE WHEN num_of_reads = 0
+                    THEN 0 ELSE (io_stall_read_ms / num_of_reads) END) AS %s
+             , AVG(CASE WHEN num_of_writes = 0
+                    THEN 0 ELSE (io_stall_write_ms / num_of_writes) END) AS %s
+             , MAX(CASE WHEN num_of_reads = 0
+                    THEN 0 ELSE (io_stall_read_ms / num_of_reads) END) AS %s
+             , MAX(CASE WHEN num_of_writes = 0
+                    THEN 0 ELSE (io_stall_write_ms / num_of_writes) END) AS %s
+             , AVG(CASE WHEN num_of_reads + num_of_writes = 0
+                    THEN 0 ELSE (io_stall / (num_of_reads + num_of_writes)) END) AS %s
+             , MAX(CASE WHEN num_of_reads + num_of_writes = 0
+                    THEN 0 ELSE (io_stall / (num_of_reads + num_of_writes)) END) AS %s
              , max(io_stall_queued_read_ms) AS %s
              , max(io_stall_queued_write_ms) AS %s
             FROM sys.dm_io_virtual_file_stats(null, null) a
             INNER JOIN sys.master_files b ON a.database_id = b.database_id AND a.file_id = b.file_id
             GROUP BY a.database_id
-        ''' % (NAME, READ, WRITE, STALL, QUEUED_READ, QUEUED_WRITE))
+        ''' % (NAME, AVG_READ, AVG_WRITE, MAX_READ, MAX_WRITE, AVG_IO_STALL, MAX_IO_STALL, QUEUED_READ, QUEUED_WRITE))
 
         super().__init__()
 
@@ -57,12 +61,12 @@ class IOStall(AbstractMetric):
         """
         with app.app_context():
             for row in rows:
-                self.metric_total \
-                    .labels(server=db_util.get_server(), port=db_util.get_port(), database=row[NAME]) \
-                    .set(row[STALL])
-
-                self._set_metric(row, READ)
-                self._set_metric(row, WRITE)
+                self._set_metric(row, AVG_READ)
+                self._set_metric(row, AVG_WRITE)
+                self._set_metric(row, MAX_READ)
+                self._set_metric(row, MAX_WRITE)
+                self._set_metric(row, AVG_IO_STALL)
+                self._set_metric(row, MAX_IO_STALL)
                 self._set_metric(row, QUEUED_READ)
                 self._set_metric(row, QUEUED_WRITE)
 

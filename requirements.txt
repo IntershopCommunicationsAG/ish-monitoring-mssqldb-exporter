@@ -3,7 +3,7 @@ Flask-Script==2.0.6
 Flask-Testing==0.7.1
 Flask-APScheduler==1.11.0
 gunicorn==19.9.0
-eventlet==0.25.1
+eventlet==0.31.0
 pyodbc==4.0.30
 prometheus_client==0.7.1
 coverage==5.0.4
